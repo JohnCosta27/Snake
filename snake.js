@@ -1,9 +1,11 @@
 let w = 0
 let h = 0;
-
-let spacing = 5;
+let spacing = 0;
 
 let grid = [];
+let gridx = 500; //Not to be set less than 10;
+let gridy = 250;
+
 let snake = [];
 let food = [];
 let snakeDirection = 0;
@@ -15,8 +17,8 @@ function fixSize() {
   w = window.innerWidth;
   h = window.innerHeight;
   const canvas = document.getElementById('snakeCanvas');
-  canvas.height = h/1.2 + spacing;
-  canvas.width = h/1.2 + spacing;
+  canvas.height = h;
+  canvas.width = w;
 }
 
 function pageLoad() {
@@ -28,14 +30,14 @@ function pageLoad() {
 
     for (let i = 3; i >= 0; i--) {
       let x = i + 5;
-      let y = 15;
+      let y = 3;
       let direction = 0;
       snake.push({x, y, direction});
     }
 
-    for (y = 0; y < 20; y++) {
+    for (y = 0; y < gridy; y++) {
       grid[y] = [];
-      for (x = 0; x < 20; x++) {
+      for (x = 0; x < gridx; x++) {
         grid[y][x] = "-"
       }
     }
@@ -59,29 +61,34 @@ function redraw() {
     const context = canvas.getContext('2d');
 
     context.fillStyle = '#000088';
-    context.fillRect(0, 0, h/1.2 + spacing, h/1.2 + spacing);
+    context.fillRect(0, 0, w, h);
 
-    let squareSize = (h/1.2)/20;
+    spacing = h/(gridy * 15);
+    let squareSize = h/gridy - spacing/gridy;
 
-    for (y = 0; y < 20; y++) {
-      for (x = 0; x < 20; x++) {
+    if (w < (h/gridy) * gridx) {
+      let ratio = (w / gridx) * gridy;
+      spacing = ratio/(gridy * 15);
+      squareSize = ratio/gridy - spacing/gridy;
+    }
+
+    let leftSpacing = (w - gridx * squareSize)/2;
+    let topSpacing = (h - gridy * squareSize)/2;
+
+    for (y = 0; y < gridy; y++) {
+      for (x = 0; x < gridx; x++) {
 
         if (grid[y][x] == "x" || grid[y][x] == "h") {
           context.fillStyle = 'white';
-          context.beginPath();
-          context.rect(x * squareSize + spacing, y * squareSize + spacing, squareSize - spacing, squareSize - spacing);
-          context.fill();
         } else if (grid[y][x] == "-"){
           context.fillStyle = 'black';
-          context.beginPath();
-          context.rect(x * squareSize + spacing, y * squareSize + spacing, squareSize - spacing, squareSize - spacing);
-          context.fill();
         } else {
           context.fillStyle = 'red';
-          context.beginPath();
-          context.rect(x * squareSize + spacing, y * squareSize + spacing, squareSize - spacing, squareSize - spacing);
-          context.fill();
         }
+
+        context.beginPath();
+        context.rect(x * squareSize + spacing + leftSpacing, y * squareSize + spacing + topSpacing, squareSize - spacing, squareSize - spacing);
+        context.fill();
 
       }
     }
