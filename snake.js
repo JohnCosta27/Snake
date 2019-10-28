@@ -192,8 +192,8 @@ function generateFood() {
   do {
 
     repeat = false;
-    food[0] = Math.floor(Math.random() * 20);
-    food[1] = Math.floor(Math.random() * 20);
+    food[0] = Math.floor(Math.random() * gridx);
+    food[1] = Math.floor(Math.random() * gridy);
 
     for (let i = 0; i < snake.length; i++) {
       if ((food[0] == snake[i].x) || (food[1] == snake[i].y)) {
