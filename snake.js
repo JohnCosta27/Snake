@@ -10,6 +10,9 @@ let snake = [];
 let food = [];
 let snakeDirection = 0;
 
+let xDown = null;
+let yDown = null;
+
 setInterval(move, 75);
 document.onkeydown = checkKey;
 
@@ -24,7 +27,13 @@ function fixSize() {
 function pageLoad() {
 
     window.addEventListener("resize", fixSize);
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove, false);
+
     fixSize();
+
+    gridx = w / 50;
+    gridy = h / 50;
 
     snake = [];
 
@@ -218,3 +227,47 @@ function checkKey(e) {
     }
 
 }
+
+function getTouches(evt) {
+  return evt.touches ||             // browser API
+         evt.originalEvent.touches; // jQuery
+}
+
+function handleTouchStart(evt) {
+    const firstTouch = getTouches(evt)[0];
+    xDown = firstTouch.clientX;
+    yDown = firstTouch.clientY;
+};
+
+function handleTouchMove(evt) {
+    if ( ! xDown || ! yDown ) {
+        return;
+    }
+
+    var xUp = evt.touches[0].clientX;
+    var yUp = evt.touches[0].clientY;
+
+    var xDiff = xDown - xUp;
+    var yDiff = yDown - yUp;
+
+    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+        if ( xDiff > 0 ) {
+            /* left swipe */
+            snakeDirection = 2;
+        } else {
+            /* right swipe */
+            snakeDirection = 0;
+        }
+    } else {
+        if ( yDiff > 0 ) {
+            /* up swipe */
+            snakeDirection = 1;
+        } else {
+            /* down swipe */
+            snakeDirection = 3;
+        }
+    }
+    /* reset values */
+    xDown = null;
+    yDown = null;
+};
