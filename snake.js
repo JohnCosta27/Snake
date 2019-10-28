@@ -27,13 +27,10 @@ function fixSize() {
 function pageLoad() {
 
     window.addEventListener("resize", fixSize);
-    document.addEventListener('touchstart', handleTouchStart, false);
-    document.addEventListener('touchmove', handleTouchMove, false);
+    window.addEventListener('touchstart', handleTouchStart, false);
+    window.addEventListener('touchmove', handleTouchMove, false);
 
     fixSize();
-
-    gridx = w / 50;
-    gridy = h / 50;
 
     snake = [];
 
