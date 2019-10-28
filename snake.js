@@ -3,14 +3,14 @@ let h = 0;
 let spacing = 0;
 
 let grid = [];
-let gridx = 500; //Not to be set less than 10;
-let gridy = 250;
+let gridx = 38; //Not to be set less than 10;
+let gridy = 20;
 
 let snake = [];
 let food = [];
 let snakeDirection = 0;
 
-setInterval(move, 100);
+setInterval(move, 75);
 document.onkeydown = checkKey;
 
 function fixSize() {
@@ -105,12 +105,32 @@ function move() {
 
     if (tiles.direction == 0) {
       tiles.x++;
+
+      if (tiles.x >= gridx) {
+        tiles.x = 0;
+      }
+
     } else if (tiles.direction == 1) {
       tiles.y--;
+
+      if (tiles.y < 0) {
+        tiles.y = gridy - 1;
+      }
+
     } else if (tiles.direction == 2) {
       tiles.x--;
+
+      if (tiles.x < 0) {
+        tiles.x = gridx - 1;
+      }
+
     } else if (tiles.direction == 3) {
       tiles.y++;
+
+      if (tiles.y >= gridy) {
+        tiles.y = 0;
+      }
+
     } else {
       tiles.direction = snake[snake.length - 2].direction;
     }
