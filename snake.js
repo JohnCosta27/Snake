@@ -32,6 +32,9 @@ function pageLoad() {
 
     fixSize();
 
+    gridx = Math.floor(w/50);
+    gridy = Math.floor(h/50);
+
     snake = [];
 
     for (let i = 3; i >= 0; i--) {
