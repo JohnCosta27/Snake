@@ -3,8 +3,8 @@ let h = 0;
 let spacing = 0;
 
 let grid = [];
-let gridx = 38; //Not to be set less than 10;
-let gridy = 20;
+let gridx = 0; //Not to be set less than 10;
+let gridy = 0;
 
 let snake = [];
 let food = [];
@@ -13,7 +13,10 @@ let snakeDirection = 0;
 let xDown = null;
 let yDown = null;
 
-setInterval(move, 75);
+let timer = 0;
+let restart = 0;
+
+let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 document.onkeydown = checkKey;
 
 function fixSize() {
@@ -31,6 +34,7 @@ function pageLoad() {
     window.addEventListener('touchmove', handleTouchMove, false);
 
     fixSize();
+    timer = setInterval(move, 75);
 
     gridx = Math.floor(w/50);
     gridy = Math.floor(h/50);
@@ -69,6 +73,7 @@ function redraw() {
     const canvas = document.getElementById('snakeCanvas');
     const context = canvas.getContext('2d');
 
+    context.globalCompositeOperation="source-over";
     context.fillStyle = '#000088';
     context.fillRect(0, 0, w, h);
 
@@ -100,6 +105,20 @@ function redraw() {
         context.fill();
 
       }
+    }
+
+    if (restart == 1 || restart == 2) {
+
+      context.fillStyle = "red";
+      context.textAlign = "center";
+      context.font = "72px Arial";
+
+      if (isMobile) {
+        context.fillText("Swipe left then right to restart", w/2, (h*4)/5);
+      } else {
+        context.fillText("Press 'X' to restart", w/2, (h*4)/5);
+      }
+
     }
 
     window.requestAnimationFrame(redraw);
@@ -140,7 +159,7 @@ function move() {
         tiles.y = 0;
       }
 
-    } else {
+    } else if (tiles.direction == 4) {
       tiles.direction = snake[snake.length - 2].direction;
     }
 
@@ -152,7 +171,8 @@ function move() {
 
     if (x != 0) {
       if (grid[snake[x].y][snake[x].x] == "h") {
-        pageLoad();
+        clearTimeout(timer);
+        restart = 1;
       } else {
         grid[snake[x].y][snake[x].x] = "x";
       }
@@ -224,6 +244,11 @@ function checkKey(e) {
     else if (e.keyCode == '39') {
        // right arrow
       snakeDirection = 0;
+    } else if (e.keyCode == '88') {
+      if (restart == 1) {
+        restart = 0;
+        pageLoad();
+      }
     }
 
 }
@@ -253,9 +278,16 @@ function handleTouchMove(evt) {
     if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
         if ( xDiff > 0 ) {
             /* left swipe */
+            if (restart == 1) {
+              restart = 2;
+            }
             snakeDirection = 2;
         } else {
             /* right swipe */
+            if (restart == 2) {
+              restart = 0;
+              pageLoad();
+            }
             snakeDirection = 0;
         }
     } else {
